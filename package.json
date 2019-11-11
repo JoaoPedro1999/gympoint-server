@@ -1,0 +1,8 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "repository": "https://github.com/JoaoPedro1999/gympoint-server.git",
+  "author": "Joao Pedro",
+  "license": "MIT"
+}
