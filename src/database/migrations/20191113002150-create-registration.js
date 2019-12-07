@@ -21,6 +21,13 @@ module.exports = {
         onDelete: 'SET NULL',
         allowNull: true,
       },
+      payment_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'payment_method', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allowNull: true,
+      },
       start_date: {
         type: Sequelize.DATE,
         allowNull: false,

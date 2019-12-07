@@ -1,12 +1,10 @@
 import Sequelize, { Model } from 'sequelize';
 
-class Plan extends Model {
+class PaymentMethod extends Model {
   static init(sequelize) {
     super.init(
       {
-        title: Sequelize.STRING,
-        duration: Sequelize.INTEGER,
-        price: Sequelize.FLOAT,
+        description: Sequelize.STRING,
       },
       {
         sequelize,
@@ -17,4 +15,4 @@ class Plan extends Model {
   }
 }
 
-export default Plan;
+export default PaymentMethod;

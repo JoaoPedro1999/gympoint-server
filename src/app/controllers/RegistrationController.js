@@ -4,6 +4,7 @@ import Registration from '../models/Registration';
 import Student from '../models/Student';
 import Plan from '../models/Plan';
 import User from '../models/User';
+import PaymentMethod from '../models/PaymentMethod';
 
 import Queue from '../../lib/Queue';
 
@@ -44,6 +45,7 @@ class RegistrationsController {
     const schema = Yup.object().shape({
       student_id: Yup.number().required(),
       plan_id: Yup.number().required(),
+      payment_id: Yup.number().required(),
       start_date: Yup.date().required(),
     });
 
@@ -51,7 +53,7 @@ class RegistrationsController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { student_id, plan_id } = req.body;
+    const { student_id, plan_id, payment_id } = req.body;
 
     const studentExist = await Student.findByPk(student_id);
 
@@ -65,17 +67,17 @@ class RegistrationsController {
       return res.status(400).json({ error: 'Plan not found' });
     }
 
+    const paymentExist = await PaymentMethod.findByPk(payment_id);
+
+    const { description } = paymentExist;
+
+    if (!paymentExist) {
+      return res.status(400).json({ error: 'Payment Method not found' });
+    }
+
     const start_date = parseISO(req.body.start_date);
     const end_date = addMonths(start_date, planExist.duration);
     const price = planExist.price * planExist.duration;
-
-    const user = await User.findByPk(req.userId);
-
-    if (!user.profile_admin) {
-      return res
-        .status(405)
-        .json({ error: 'Action allowed for administrators only!' });
-    }
 
     const registred = await Registration.findOne({ where: { student_id } });
     if (registred) {
@@ -85,6 +87,8 @@ class RegistrationsController {
     const registration = await Registration.create({
       student_id,
       plan_id,
+      payment_id,
+      description,
       start_date,
       end_date,
       price,
@@ -93,6 +97,7 @@ class RegistrationsController {
     await Queue.add('RegistrationMail', {
       student_id,
       plan_id,
+      description,
       start_date,
       end_date,
       price,

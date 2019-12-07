@@ -32,7 +32,11 @@ class Registration extends Model {
 
   static associate(models) {
     this.belongsTo(models.Student, { foreignKey: 'student_id', as: 'student' });
-    this.belongsTo(models.Plan, { foreignKey: 'plan_id', as: 'plan' });
+    this.hasOne(models.Plan, { foreignKey: 'plan_id', as: 'plan' });
+    this.hasOne(models.PaymentMethod, {
+      foreignKey: 'payment_id',
+      as: 'payment_method',
+    });
   }
 }
 
